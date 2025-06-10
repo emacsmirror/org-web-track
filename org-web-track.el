@@ -407,32 +407,37 @@ running on the local machine instead of the WWW server."
                                 (split-string header (rx (seq ":" (0+ space)))))
                               header-list))))
               (values nil))
-    (request url
-      :sync t
-      :timeout org-web-track-update-timeout
-      :unix-socket unix-socket
-      :success
-      (cl-function
-       (lambda (&key response &allow-other-keys)
-         (setq values
-               (org-web-track--apply-selectors
-                (request-response-header response "content-type")
-                (request-response-data response)
-                selectors))))
-      :error
-      (cl-function
-       (lambda (&key response &allow-other-keys)
-         (when (eq (request-response-symbol-status response) 'timeout)
-           (setq values nil))
-         (message "HTTP error occurred: %s\n  URL: %s"
-                  (request-response-error-thrown response)
-                  url)))
-      :complete
-      (cl-function
-       (lambda (&key data &allow-other-keys)
-         (unless (seq-some 'stringp values)
-           (message "No value was retrieved\n  URL: %s" url))
-         data)))
+    (condition-case err
+        (request url
+          :sync t
+          :timeout org-web-track-update-timeout
+          :unix-socket unix-socket
+          :success
+          (cl-function
+           (lambda (&key response &allow-other-keys)
+             (setq values
+                   (org-web-track--apply-selectors
+                    (request-response-header response "content-type")
+                    (request-response-data response)
+                    selectors))))
+          :error
+          (cl-function
+           (lambda (&key response &allow-other-keys)
+             (when (eq (request-response-symbol-status response) 'timeout)
+               (setq values nil))
+             (message "HTTP error: %s"
+                      (request-response-error-thrown response))
+             (setq values nil)))
+          :complete
+          (cl-function
+           (lambda (&key data &allow-other-keys)
+             (unless (seq-some 'stringp values)
+               (message "No value was retrieved"))
+             data)))
+      (error
+       (message "Network error: %s"
+                (error-message-string err))
+       (setq values nil)))
     values))
 
 (defmacro org-web-track--with-content-buffer (content &rest body)
