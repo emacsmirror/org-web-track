@@ -1,2 +1,3 @@
 (specifications->manifest
- '("emacs-eldev"))
+ '("emacs-eldev"
+   "emacs-mocker"))
