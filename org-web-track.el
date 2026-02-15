@@ -239,6 +239,19 @@ used."
   :group 'org-web-track)
 
 
+(defmacro org-web-track-in-agenda-view (&rest body)
+  "Execute BODY and show its results in agenda view customized for `org-web-track'."
+  (declare (indent defun))
+  `(let ((org-columns-modify-value-for-display-function
+          'org-web-track-display-values)
+         (org-columns-default-format-for-agenda (org-web-track-columns-format))
+         (org-agenda-files (org-web-track-files))
+         (org-agenda-sorting-strategy '((tags user-defined-up)))
+         (org-agenda-cmp-user-defined 'org-web-track-cmp-updated-time)
+         (org-agenda-view-columns-initially t))
+     ,@body))
+
+
 (defun org-web-track-files ()
   "Return a list of files that contain tracking entries."
   (pcase org-web-track-files
@@ -376,14 +389,31 @@ the configuration in the variable `org-log-into-drawer'."
 
 ;;;###autoload
 (defun org-web-track-update-files ()
-  "Update all track items in variable `org-web-track-files'.
+  "Update all items in variable `org-web-track-files'.
 
-Return a list of markers pointing to items where the value has been updated."
+If called interactively and there are some updated items, this function
+shows them in an agenda view. If called from an Elisp function, the
+function returns a list of markers pointing to items whose values have
+been updated."
   (interactive)
-  (delq nil (org-map-entries (lambda ()
-                               (org-web-track-update-entry (point-marker)))
-                             (format "%s={.+}" org-web-track-url)
-                             (org-web-track-files))))
+  (when-let ((updated-item-markers
+              (delq nil (org-map-entries (lambda ()
+                                           (org-web-track-update-entry (point-marker)))
+                                         (format "%s={.+}" org-web-track-url)
+                                         (org-web-track-files)))))
+    (if (called-interactively-p 'any)
+        (org-web-track-in-agenda-view
+          (org-search-view nil
+                           (format "*{%s}"
+                                   (mapconcat (lambda (chg)
+                                                (org-with-point-at chg
+                                                  (shell-quote-argument
+                                                   (substring-no-properties
+                                                    (org-get-heading t t t t)))))
+                                              updated-item-markers
+                                              "\\|"))
+                           nil))
+      updated-item-markers)))
 
 (defun org-web-track-retrieve-values (url selectors &optional http-headers unix-socket)
   "Retrieve values using URL, SELECTORS, HTTP-HEADERS and UNIX-SOCKET.
@@ -660,13 +690,7 @@ This command invokes `org-agenda-columns' with `org-web-track-columns-format'
 to display current changes on tracking items in variable `org-web-track-files'
 along with the updated time."
   (interactive)
-  (let ((org-columns-modify-value-for-display-function
-         'org-web-track-display-values)
-        (org-columns-default-format-for-agenda (org-web-track-columns-format))
-        (org-agenda-files (org-web-track-files))
-        (org-agenda-sorting-strategy '((tags user-defined-up)))
-        (org-agenda-cmp-user-defined 'org-web-track-cmp-updated-time)
-        (org-agenda-view-columns-initially t))
+  (org-web-track-in-agenda-view
     (org-tags-view nil (format "%s={.+}" org-web-track-url))))
 
 (defun org-web-track-cmp-updated-time (a b)
