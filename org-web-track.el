@@ -136,7 +136,7 @@ If SELECTOR is a string, it is assumed to be a shell command that should accept
 the HTTP response content as stdin and return a value as stdout."
   :type '(alist :key-type (string :tag "Regexp")
                 :value-type
-                (choice (vector :tag "A CSS selector")
+                (choice (vector :tag "A CSS selector" symbol)
                         (string :tag "A shell command that processes HTTP response content")
                         function))
   :group 'org-web-track)
