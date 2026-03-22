@@ -1,5 +1,5 @@
-This is org-web-track.info, produced by .texi2any-real version 7.1.1
-from org-web-track.texi.
+This is org-web-track.info, produced by .texi2any-real version 7.3 from
+org-web-track.texi.
 
 INFO-DIR-SECTION Emacs
 START-INFO-DIR-ENTRY
@@ -61,7 +61,6 @@ Indices
 * Function index::
 * Variable index::
 * Concept index::
-
 
 
 File: org-web-track.info,  Node: Overview,  Next: Installation,  Prev: Top,  Up: Top
@@ -255,9 +254,9 @@ target, users also have the option to connect to a Unix Domain Socket
 server, which provides HTTP services mainly on a local machine.  A
 simple example of a Unix Socket server implementation complying with the
 org-web-track framework can be found at
-<https://github.com/p-snow/socket-http-server>.  Using this feature,
-non-HTTP services, such as Unix shell commands, can be effectively
-utilized within the org-web-track framework.
+<https://github.com/p-snow/spigot>.  Using this feature, non-HTTP
+services, such as Unix shell commands, can be effectively utilized
+within the org-web-track framework.
 
    Users who want to access the Unix Domain Socket server must set the
 socket's path by calling ‘org-web-track-set-unix-socket’ at the desired
@@ -467,35 +466,35 @@ File: org-web-track.info,  Node: Concept index,  Prev: Variable index,  Up: Indi
 
 * Installation instructions:             Installation.          (line 6)
 
-
 
 Tag Table:
-Node: Top234
-Node: Overview1194
-Node: Retrieving data1781
-Node: Installation2390
-Node: MELPA package2711
-Node: Basic Usage3215
-Node: Defining Tracking Items3564
-Node: Sending Additional HTTP Headers6210
-Node: Dealing with Dinamic Website7007
-Node: Accessing Unix Domain Socket Server7676
-Node: Updating Values8796
-Node: Displaying Column View9596
-Node: Reporting and Creating Graph10435
-Node: Extended Examples11166
-Node: Automatic Bulk Updating and Email Notifications11457
-Node: Q&A13217
-Node: Network Certificate Issue13362
-Node: License13899
-Node: Indices14009
-Node: Function index14166
-Node: Variable index15456
-Node: Concept index16281
+Node: Top232
+Node: Overview1191
+Node: Retrieving data1778
+Node: Installation2387
+Node: MELPA package2708
+Node: Basic Usage3212
+Node: Defining Tracking Items3561
+Node: Sending Additional HTTP Headers6207
+Node: Dealing with Dinamic Website7004
+Node: Accessing Unix Domain Socket Server7673
+Node: Updating Values8781
+Node: Displaying Column View9581
+Node: Reporting and Creating Graph10420
+Node: Extended Examples11151
+Node: Automatic Bulk Updating and Email Notifications11442
+Node: Q&A13202
+Node: Network Certificate Issue13347
+Node: License13884
+Node: Indices13994
+Node: Function index14151
+Node: Variable index15441
+Node: Concept index16266
 
 End Tag Table
 
 
 Local Variables:
 coding: utf-8
+Info-documentlanguage: en
 End:
